@@ -13,7 +13,7 @@ fn load_application_config() -> HashMap<String, Value> {
     let settings = Config::builder()
         .add_source(config::File::with_name(CONFIG_FILE_NAME))
         .build()
-        .unwrap();
+        .expect("Unable to load config file. Please create the \"Config.toml\" file.");
     let application_config = settings.get_table(APPLICATION_TABLE).unwrap();
     application_config.clone()
 }
