@@ -1,5 +1,6 @@
 use std::collections::HashMap;
-
+use env_logger::Env;
+use log::info;
 use actix_web::{web, App, HttpResponse, HttpServer};
 use config::{Config, Value};
 use luna_hub::routeconfig;
@@ -19,6 +20,7 @@ fn load_application_config() -> HashMap<String, Value> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
     let config = load_application_config();
     let bind_host = config
         .get("host")
@@ -31,7 +33,7 @@ async fn main() -> std::io::Result<()> {
         .clone()
         .into_int()
         .expect("Unable to parse bind port") as u16;
-
+    info!("Starting http server on host {:?} and port {:?}", bind_host, bind_port);
     HttpServer::new(|| {
         App::new()
             .configure(routeconfig::configure)
