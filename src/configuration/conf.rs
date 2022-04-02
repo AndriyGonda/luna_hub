@@ -1,5 +1,5 @@
-use std::io::Result;
 use serde_derive::Deserialize;
+use std::io::Result;
 
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
@@ -31,12 +31,13 @@ impl Config {
         Ok(toml::from_str(&content)?)
     }
     pub fn get_database_url(&self) -> String {
-        format!("postgres://{}:{}@{}:{}/{}",
-                self.database.user,
-                self.database.password,
-                self.database.host,
-                self.database.port,
-                self.database.db
+        format!(
+            "postgres://{}:{}@{}:{}/{}",
+            self.database.user,
+            self.database.password,
+            self.database.host,
+            self.database.port,
+            self.database.db
         )
     }
 }
