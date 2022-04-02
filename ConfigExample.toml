@@ -1,3 +1,10 @@
 [application]
 host = "127.0.0.1"
 port  = 8060
+
+[database]
+host = "127.0.0.1"
+port = 5432
+db = "luna_hub"
+user = "admin"
+password = "admin"

@@ -1,21 +1,22 @@
+use actix_web::{App, HttpResponse, HttpServer, web};
 use actix_web::middleware::Logger;
-use actix_web::{web, App, HttpResponse, HttpServer};
 use env_logger::Env;
-use log::info;
+use log::{info};
 
-use luna_hub::configuration::{app, server};
+use luna_hub::configuration::app;
+use luna_hub::configuration::conf::Config;
+
+const CONFIG_FILENAME: &'static str = "Config.toml";
+
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
-    let config = app::load_application_config();
-
-    let (bind_host, bind_port) = server::load_server_properties(&config);
+    let config = Config::from_file(CONFIG_FILENAME)?;
     info!(
-        "Starting http server on host {:?} and port {:?}",
-        bind_host, bind_port
-    );
-
+            "Starting http server on host {:?} and port {:?}",
+            config.application.host, config.application.port
+        );
     let server = HttpServer::new(|| {
         App::new()
             .wrap(app::cors_configuration())
@@ -24,7 +25,7 @@ async fn main() -> std::io::Result<()> {
             .configure(app::configure)
             .default_service(web::to(|| HttpResponse::NotFound()))
     })
-    .bind((bind_host, bind_port))?
+    .bind((config.application.host, config.application.port))?
     .run();
     server.await
 }
