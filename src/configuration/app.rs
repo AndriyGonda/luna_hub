@@ -1,5 +1,6 @@
-use actix_web::web;
+use actix_web::{http, web};
 use std::collections::HashMap;
+use actix_cors::Cors;
 
 use config::{Config, Value};
 
@@ -23,6 +24,15 @@ pub fn load_application_config() -> HashMap<String, Value> {
         .expect(config_failed_format!());
     let application_config = settings.get_table(CONFIG_APPLICATION_TABLE).unwrap();
     application_config
+}
+
+pub fn cors_configuration() -> Cors {
+    let cors = Cors::default()
+        .allow_any_origin()
+        .allow_any_method()
+        .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+        .allowed_header(http::header::CONTENT_TYPE);
+    cors
 }
 
 pub fn configure(cfg: &mut web::ServiceConfig) {}
